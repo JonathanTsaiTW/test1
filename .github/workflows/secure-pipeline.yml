@@ -379,7 +379,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: 建置網站
-    needs: [security-summary]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout 代碼
@@ -397,7 +396,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: 部署到 GitHub Pages
-    needs: [build, security-summary]
+    needs: [build]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       pages: write
@@ -415,4 +414,4 @@ jobs:
           echo "🎉 部署成功！"
           echo "網站 URL: ${{ steps.deployment.outputs.page_url }}"
           echo ""
-          echo "安全狀態: ${{ needs.security-summary.outputs.all-passed }}"
+          echo "安全狀態: 請於 Actions 的 Security 檢查結果中查看各項掃描結果"

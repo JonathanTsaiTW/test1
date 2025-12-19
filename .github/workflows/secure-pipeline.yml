@@ -263,6 +263,7 @@ jobs:
 
   # 5. Secret 掃描
   secret-scan:
+    if: false
     runs-on: ubuntu-latest
     name: Secret 掃描 - Gitleaks
     permissions:

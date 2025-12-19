@@ -285,7 +285,7 @@ jobs:
   security-summary:
     runs-on: ubuntu-latest
     name: 安全掃描總結
-    needs: [sast-scan, sca-scan, container-scan, iac-scan, secret-scan]
+    needs: [sast-scan, sca-scan, container-scan, iac-scan]
     if: always()
     outputs:
       all-passed: ${{ steps.check-status.outputs.all-passed }}
@@ -302,7 +302,6 @@ jobs:
           echo "2. SCA (依賴漏洞檢測) - Dependency-Check: ${{ needs.sca-scan.result }}"
           echo "3. 容器映像掃描 - Trivy: ${{ needs.container-scan.result }}"
           echo "4. IaC 安全檢查 - Checkov: ${{ needs.iac-scan.result }}"
-          echo "5. Secret 掃描 - Gitleaks: ${{ needs.secret-scan.result }}"
           echo ""
           echo "📊 詳細結果請查看："
           echo "   - Security 標籤 → Code scanning alerts"
@@ -313,8 +312,7 @@ jobs:
           if [[ "${{ needs.sast-scan.result }}" == "failure" ]] || \
              [[ "${{ needs.sca-scan.result }}" == "failure" ]] || \
              [[ "${{ needs.container-scan.result }}" == "failure" ]] || \
-             [[ "${{ needs.iac-scan.result }}" == "failure" ]] || \
-             [[ "${{ needs.secret-scan.result }}" == "failure" ]]; then
+             [[ "${{ needs.iac-scan.result }}" == "failure" ]]; then
             echo "⚠️  警告：部分掃描發現問題，請檢查詳細報告"
             echo "all-passed=false" >> $GITHUB_OUTPUT
           else

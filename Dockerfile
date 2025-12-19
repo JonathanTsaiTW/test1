@@ -25,5 +25,15 @@ RUN sed -i 's/listen\s*80;/listen 8080;/g' /etc/nginx/conf.d/default.conf && \
 # 暴露 8080 端口（非特權端口）
 EXPOSE 8080
 
+# 建立並切換到非 root 使用者以改善容器安全
+# 使用 UID/GID 1000，並確保 Nginx 可寫入所需的暫存目錄
+RUN addgroup -g 1000 app || addgroup app && \
+    adduser -D -u 1000 -G app app || adduser -D -G app app && \
+    mkdir -p /tmp/proxy_temp /tmp/client_temp /tmp/fastcgi_temp /tmp/uwsgi_temp /tmp/scgi_temp /var/cache/nginx && \
+    chown -R app:app /usr/share/nginx/html /tmp /var/cache/nginx || true
+
+# 切換到非 root 使用者（容器內的進程將以此使用者執行）
+USER app
+
 # 啟動 Nginx
 CMD ["nginx", "-g", "daemon off;"]
